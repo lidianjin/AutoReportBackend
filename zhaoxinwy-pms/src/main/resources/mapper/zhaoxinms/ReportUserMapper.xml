@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhaoxinms.owner.mapper.ReportUserMapper">
+    
+    <resultMap type="ReportUser" id="ReportUserResult">
+        <result property="id"    column="id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="userName"    column="user_name"    />
+        <result property="sex"    column="sex"    />
+        <result property="height"    column="height"    />
+        <result property="weight"    column="weight"    />
+        <result property="reportUrl"    column="report_url"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectReportUserVo">
+        select id, user_id, user_name, sex, height, weight, report_url, create_by, create_time, update_by, update_time, remark from report_user
+    </sql>
+
+    <select id="selectReportUserList" parameterType="ReportUser" resultMap="ReportUserResult">
+        <include refid="selectReportUserVo"/>
+        <where>  
+            <if test="userName != null  and userName != ''"> and user_name like concat('%', #{userName}, '%')</if>
+            <if test="sex != null  and sex != ''"> and sex = #{sex}</if>
+            <if test="height != null  and height != ''"> and height = #{height}</if>
+            <if test="weight != null  and weight != ''"> and weight = #{weight}</if>
+            <if test="reportUrl != null  and reportUrl != ''"> and report_url = #{reportUrl}</if>
+        </where>
+    </select>
+    
+    <select id="selectReportUserById" parameterType="Long" resultMap="ReportUserResult">
+        <include refid="selectReportUserVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertReportUser" parameterType="ReportUser" useGeneratedKeys="true" keyProperty="id">
+        insert into report_user
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">user_id,</if>
+            <if test="userName != null">user_name,</if>
+            <if test="sex != null">sex,</if>
+            <if test="height != null">height,</if>
+            <if test="weight != null">weight,</if>
+            <if test="reportUrl != null">report_url,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">#{userId},</if>
+            <if test="userName != null">#{userName},</if>
+            <if test="sex != null">#{sex},</if>
+            <if test="height != null">#{height},</if>
+            <if test="weight != null">#{weight},</if>
+            <if test="reportUrl != null">#{reportUrl},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateReportUser" parameterType="ReportUser">
+        update report_user
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="userName != null">user_name = #{userName},</if>
+            <if test="sex != null">sex = #{sex},</if>
+            <if test="height != null">height = #{height},</if>
+            <if test="weight != null">weight = #{weight},</if>
+            <if test="reportUrl != null">report_url = #{reportUrl},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteReportUserById" parameterType="Long">
+        delete from report_user where id = #{id}
+    </delete>
+
+    <delete id="deleteReportUserByIds" parameterType="String">
+        delete from report_user where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>
