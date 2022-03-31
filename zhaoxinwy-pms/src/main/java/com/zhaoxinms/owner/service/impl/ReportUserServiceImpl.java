@@ -1,7 +1,9 @@
 package com.zhaoxinms.owner.service.impl;
 
 import java.util.List;
-import com.zhaoxinms.common.utils.DateUtils;
+
+import com.zhaoxinms.common.core.domain.entity.SysRole;
+import com.zhaoxinms.common.core.domain.entity.SysUser;
 import com.zhaoxinms.common.utils.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,11 +37,33 @@ public class ReportUserServiceImpl extends ServiceImpl<ReportUserMapper, ReportU
     public List<ReportUser> getList(ReportUserPagination pagination) {
     	LambdaQueryWrapper<ReportUser> lqw = buildQueryWrapper(pagination);
     	lqw.orderByDesc(ReportUser::getCreateTime);
-    	
+
+        SysUser userInfo = userProvider.get();
+
+        // 检查是否报告用户
+        // 报告用户只能查看自己的数据
+        Boolean isReportUser = checkWhetherReportUser(userInfo);
+
+        if (isReportUser) {
+            lqw.eq(ReportUser::getUserId, userInfo.getUserId());
+        }
+
         Page<ReportUser> page =
             new Page<>(pagination.getCurrentPage(), pagination.getPageSize());
         IPage<ReportUser> userIPage = this.page(page, lqw);
         return pagination.setData(userIPage.getRecords(), userIPage.getTotal());
+    }
+
+    Boolean checkWhetherReportUser(SysUser userInfo) {
+        List<SysRole> roles = userInfo.getRoles();
+
+        for (SysRole sysRole: roles) {
+            if ("16".equals(String.valueOf(sysRole.getRoleId()))) {
+                return true;
+            }
+        }
+
+        return false;
     }
     
     @Override

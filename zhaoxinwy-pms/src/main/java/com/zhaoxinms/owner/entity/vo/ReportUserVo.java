@@ -20,6 +20,16 @@ public class ReportUserVo {
 
 	private static final long serialVersionUID = 1L;
 
+	@ApiModelProperty("id")
+	private String id;
+
+	/**
+	 * 用户 ID
+	 */
+	@Excel(name = "用户 ID")
+	@ApiModelProperty("用户 ID")
+	private String userId;
+
     /**
      * 姓名
      */
